@@ -1,0 +1,11 @@
+beautifulsoup4==4.6.0
+bs4==0.0.1
+html5lib==0.999999999
+mechanize==0.3.3
+numpy==1.12.1
+pandas==0.20.1
+pycrypto==2.6.1
+python-dateutil==2.6.0
+pytz==2017.2
+six==1.10.0
+webencodings==0.5.1
