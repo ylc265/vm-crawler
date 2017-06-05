@@ -55,8 +55,12 @@ def get_parcel_document(parcel):
             next_page = next_page + 1
         else:
             break
-    if os.listdir(directory) == []:
+    total_downloads = os.listdir(directory)
+    if total_downloads == []:
         raise Exception("Didn't retrieve data")
+    else:
+        print 'total downloads: ' + str(len(total_downloads))
+        sys.stdout.flush()
 
 def has_next_page(br, text, next_page):
     link = ''
@@ -178,16 +182,23 @@ def main():
     directory = 'parcel_documents'
     os.chdir(directory)
     logging.basicConfig(filename='parcel_parsing.log')
+    error_counter = 0
     while start != end:
         print str(start) + ' parcel: ' + parcels[start]
         sys.stdout.flush()
         try:
             get_parcel_document(parcels[start])
             start += 1
+            error_counter = 0
         except Exception as e:
-            print parcels[start] + " " + e
+            print e
             traceback.print_exc()
             sys.stdout.flush()
+            error_counter += 1
+            if error_counter == 5:
+              print str(start) + ' parcel: ' + parcels[start] + ' (retry)'
+              start += 1
+              error_counter = 0
             continue
     os.chdir('..')
     #end = time.time()
