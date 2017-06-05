@@ -55,6 +55,8 @@ def get_parcel_document(parcel):
             next_page = next_page + 1
         else:
             break
+    if os.listdir(directory) == []:
+        raise Exception("Didn't retrieve data")
 
 def has_next_page(br, text, next_page):
     link = ''
@@ -72,6 +74,8 @@ def has_next_page(br, text, next_page):
 def parse_and_download(br, text, directory):
     soup = BeautifulSoup(text)
     rows = soup.find_all(valign='top')
+    print str(len(rows)-2) + ' rows'
+    sys.stdout.flush()
     for i in range(2, len(rows)):
         current_row = rows[i]
         columns = current_row.find_all('td')
@@ -174,14 +178,16 @@ def main():
     directory = 'parcel_documents'
     os.chdir(directory)
     logging.basicConfig(filename='parcel_parsing.log')
-    for i in range(start, end):
-        print i
+    while start != end:
+        print str(start) + ' parcel: ' + parcels[start]
+        sys.stdout.flush()
         try:
-            get_parcel_document(parcels[i])
+            get_parcel_document(parcels[start])
+            start += 1
         except Exception as e:
-            print parcel[i]
-            print e
+            print parcels[start] + " " + e
             traceback.print_exc()
+            sys.stdout.flush()
             continue
     os.chdir('..')
     #end = time.time()
